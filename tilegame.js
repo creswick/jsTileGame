@@ -1,6 +1,6 @@
 YUI().use('node', 'event-gestures', function(Y) {
-    var V_COUNT = 2;
-    var H_COUNT = 2;
+    var V_COUNT = 4;
+    var H_COUNT = 4;
 
 //    var url = "http://i.imgur.com/sMs6L.jpg";
     var url = "sMs6L.jpg";
@@ -103,6 +103,23 @@ YUI().use('node', 'event-gestures', function(Y) {
 
         // create the board:
         this.tiles = populate();
+
+        // Mixes the board up, looping over the whole board 'amount'
+        // number of times.
+        this.mixBoard = function (amount) {
+            var fnArray = [ leftIdx, rightIdx, aboveIdx, belowIdx]
+            // start with the last tile, select a random adjacent
+            // tile, swap, repeat.
+            var swapIdx = this.tiles.length - 1;
+            for (var i=0; i < (amount * this.tiles.length); i++) {
+                var fnNum = Math.floor(Math.random() * 4);
+                var newIdx = fnArray[fnNum](swapIdx)
+                if ( -1 != newIdx ) {
+                    this.swapTiles(swapIdx, newIdx);
+                    swapIdx = newIdx;
+                }
+            }
+        }
 
         this.repaint = function () {
             var n = Y.one('#board');
@@ -215,6 +232,7 @@ YUI().use('node', 'event-gestures', function(Y) {
         var boardNode = Y.one('#image');
         Y.log("constructing board");
         var board = new Board(H_COUNT, V_COUNT);
+        board.mixBoard(20);
         Y.log("built board");
         boardNode.appendChild(board.render());
     });
