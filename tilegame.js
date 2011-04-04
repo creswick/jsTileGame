@@ -1,11 +1,38 @@
 YUI().use('node', 'event-gestures', function(Y) {
-    var V_COUNT = 8;
-    var H_COUNT = 8;
+    var V_COUNT = 2;
+    var H_COUNT = 2;
 
 //    var url = "http://i.imgur.com/sMs6L.jpg";
     var url = "sMs6L.jpg";
-    var height = 400;
-    var width = 400;
+    var height;
+    var width;
+
+    /**
+     * Calculate the size of image.
+     * @param {string} url Url of the image which size to find
+     * @param {function(number, number)} onSizeCalculated Callback function to run once
+     *   the size of the image calculated
+     */
+    function ImgSize(url, onSizeCalculated) {
+        // Once the image is loaded, the calls the callback function onSizeCalculated
+        function setDimensions() {
+            // scope changed: this = Image object
+            if (onSizeCalculated) {
+                onSizeCalculated(this.width, this.height);
+            }
+        }
+        // Initialization:
+        // - sets callback on image loaded - setDimensions;
+        // - loads the image.
+        function init() {
+            var img = new Image();
+            img.name = url;
+            img.onload = setDimensions;
+            img.src = url;
+        }
+        // Run initialization
+        init();
+    };
 
     var tileId = function(tile) { return "tile-"+tile.name; }
     var tileHeightPx = function() { return tileHeight()+'px'; }
@@ -61,8 +88,8 @@ YUI().use('node', 'event-gestures', function(Y) {
                     var idx = i * x + j;
                     board[idx] = { name: "tile-"+idx,
                                    // loc represents the location in an image:
-                                   loc: { x: i,
-                                          y: j},
+                                   loc: { x: j,
+                                          y: i},
                                    blank: false
                                  };
                     if (idx + 1 == V_COUNT * H_COUNT) {
@@ -149,8 +176,6 @@ YUI().use('node', 'event-gestures', function(Y) {
                         Y.Node.create('<div id="'+tileId(tile)+'" class="tile"/>');
 
                     child.setStyle('position', 'absolute');
-                    // child.setStyle('top', (tile.loc.y * tileHeight())+'px');
-                    // child.setStyle('left', (tile.loc.x * tileWidth())+'px');
                     child.setStyle('top', (i * tileHeight())+'px');
                     child.setStyle('left', (j * tileWidth())+'px');
                     child.setStyle('height', tileHeight()+'px' );
@@ -161,12 +186,16 @@ YUI().use('node', 'event-gestures', function(Y) {
                         child.setStyle('backgroundImage',
                                        'url("'+url+'")');
                         child.setStyle('overflow', 'hidden');
-                        child.setStyle('backgroundPosition',
-                                       (tile.loc.y * tileHeight())+'px '+
-                                       (tile.loc.x * tileWidth())+'px');
+                        child.setStyle('backgroundRepeat', 'no-repeat');
+                        var bgLeft = (-1 * tile.loc.x * tileWidth())+'px';
+                        var bgTop  = (-1 * tile.loc.y * tileHeight())+'px';
+                        var bgPos  = bgLeft + ' ' + bgTop;
+                        Y.log("setting tile "+idx+" bg: "+bgPos);
+                        child.setStyle('backgroundPositionX', bgLeft);
+                        child.setStyle('backgroundPositionY', bgTop);
                     }
 
-                    // child.set('text', tile.name);
+                    child.set('text', tile.name);
 
                     child.on("dblclick", this.eventHandler(tile, this.tiles, this));
 
@@ -178,11 +207,16 @@ YUI().use('node', 'event-gestures', function(Y) {
         }
     }
 
-    // Game logic entry point:
-    var boardNode = Y.one('#image');
-    Y.log("constructing board");
-    var board = new Board(H_COUNT, V_COUNT);
-    Y.log("built board");
-    boardNode.appendChild(board.render());
+    new ImgSize(url, function(w,h) {
+        width = w;
+        height = h;
+
+        // Game logic entry point:
+        var boardNode = Y.one('#image');
+        Y.log("constructing board");
+        var board = new Board(H_COUNT, V_COUNT);
+        Y.log("built board");
+        boardNode.appendChild(board.render());
+    });
 });
 
