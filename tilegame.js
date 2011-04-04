@@ -1,6 +1,6 @@
 YUI().use('node', 'event-gestures', function(Y) {
-    var V_COUNT = 4;
-    var H_COUNT = 4;
+    var V_COUNT = 3;
+    var H_COUNT = 3;
 
 //    var url = "http://i.imgur.com/sMs6L.jpg";
     var url = "sMs6L.jpg";
@@ -87,6 +87,7 @@ YUI().use('node', 'event-gestures', function(Y) {
                 for (var j = 0; j < y; j++ ) {
                     var idx = i * x + j;
                     board[idx] = { name: "tile-"+idx,
+                                   id: idx,
                                    // loc represents the location in an image:
                                    loc: { x: j,
                                           y: i},
@@ -222,6 +223,16 @@ YUI().use('node', 'event-gestures', function(Y) {
             }
             return node;
         }
+
+        // not used.
+        this.checkDone = function() {
+            for (var i=0; i < this.tiles.length; i++) {
+                if ( i != this.tiles[i].id ) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     new ImgSize(url, function(w,h) {
@@ -232,7 +243,7 @@ YUI().use('node', 'event-gestures', function(Y) {
         var boardNode = Y.one('#image');
         Y.log("constructing board");
         var board = new Board(H_COUNT, V_COUNT);
-        board.mixBoard(20);
+        board.mixBoard(2);
         Y.log("built board");
         boardNode.appendChild(board.render());
     });
