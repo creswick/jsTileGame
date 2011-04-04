@@ -1,6 +1,6 @@
 YUI().use('node', 'event-gestures', function(Y) {
-    var V_COUNT = 3;
-    var H_COUNT = 3;
+    var V_COUNT = 8;
+    var H_COUNT = 8;
 
 //    var url = "http://i.imgur.com/sMs6L.jpg";
     var url = "sMs6L.jpg";
@@ -213,7 +213,7 @@ YUI().use('node', 'event-gestures', function(Y) {
                         child.setStyle('backgroundPositionY', bgTop);
                     }
 
-                    child.set('text', tile.name);
+                    // child.set('text', tile.name);
 
                     child.on("dblclick", this.eventHandler(tile, this.tiles, this));
 
@@ -243,7 +243,7 @@ YUI().use('node', 'event-gestures', function(Y) {
         var boardNode = Y.one('#image');
         Y.log("constructing board");
         var board = new Board(H_COUNT, V_COUNT);
-        board.mixBoard(2);
+        board.mixBoard(10);
         Y.log("built board");
         boardNode.appendChild(board.render());
     });
