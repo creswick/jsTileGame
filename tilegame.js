@@ -209,8 +209,9 @@ YUI().use('node', 'event-gestures', function(Y) {
                             var bgTop  = (-1 * tile.loc.y * tileHeight())+'px';
                             var bgPos  = bgLeft + ' ' + bgTop;
                             Y.log("setting tile "+idx+" bg: "+bgPos);
-                            child.setStyle('backgroundPositionX', bgLeft);
-                            child.setStyle('backgroundPositionY', bgTop);
+                            // child.setStyle('backgroundPositionX', bgLeft);
+                            // child.setStyle('backgroundPositionY', bgTop);
+                            child.setStyle('backgroundPosition', bgLeft+' '+bgTop);
                         }
 
                         // child.set('text', tile.name);
